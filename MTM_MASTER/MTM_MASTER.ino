@@ -6,6 +6,7 @@ byte modules[NUM_MODULES]={0,1};
 int error();
 int send(byte addr, byte data[], int n);
 int init();
+int bleed();
 
 void setup() {
     delay(100);
@@ -23,7 +24,10 @@ int init() {
         if(!send(modules[i], 0, 1))
             return error();
     }
-    
+    for(int i=0; i<NUM_MODULES; i++) {
+        if(!bleed(modules[i]))
+            return error();
+    }
 }
 
 int send(byte addr, byte data[], int n) {
@@ -40,6 +44,7 @@ int error() {
     return -1;
 }
 
-int zero() {
-    
+int bleed() {
+    if()
+    return 0;
 }
