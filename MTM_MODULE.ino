@@ -2,7 +2,7 @@
 
 #include <Wire.h>
 #define commandSize 6
-#define returnSize  3
+#define returnSize  6
 #define IN1PIN      3
 #define IN2PIN      5
 #define IN3PIN      6
@@ -25,13 +25,10 @@ byte motor1Speed=0;
 byte motor2Speed=0;
 char motor1Status;
 char motor2Status;
+
 void setup(){
     noInterrupts();
     //Serial.begin(9600);
-    // for(int i=0;i<dip;i++){
-    //     pinMode(dipPins[i],INPUT);
-    //     digitalWrite(dipPins[i],HIGH);
-    // }
     for(int i=0;i<4;i++){			//configures inPins 
         pinMode(inPins[i],OUTPUT);
     }
@@ -40,74 +37,65 @@ void setup(){
     }
     //addr=address();
     readyData=false;
-    Wire.onRequest(requestHandler);
-    Wire.onReceive(receiveHandler);
+    Wire.onRequest(requestHandler); //calls requestH upon data request from master
+    Wire.onReceive(receiveHandler); //calls receiveH upon receiving data
 }
-byte address(){
-    byte j=0;
-    for(int i=0;i<dip;i++){
-        j=(j<<1)|digitalRead(dipPins[i]);
-    }
-    return j;
-}
-void requestHandler()
-{
+void requestHandler(){
     Wire.write(outData,commandSize);
 }
-void receiveHandler(int numBytes)
-{
+void receiveHandler(int numBytes){
     int i=0;
-    while(Wire.available())
-    {
+    while(Wire.available() && i<commandSize){
         inData[i]=Wire.read();
         i++;
     }
-    readyData=true;
+
+    readyData=true;	
 }
-void loop()
-{
-    if(readyData)
-    {
-        for(int i=0;i<6;i++)
-            curData[i]=inData[i];
-        readyData=false;
+
+
+void loop(){
+    if(readyData){
+        for(int i=0;i<commandSize;i++){
+            curData[i] = inData[i]; 
+            outData[i] = inData[i]; 
+        }
+        readyData = false;
     }
     command();
 }
-void command()
-{
-    switch(curData[0])
-    {
-        case 0:
-            if(curData[1])
-                motorForward(0,curData[2]);
-            else
-                motorBackward(0,curData[2]);
-            if(curData[3])
-                motorForward(1,curData[4]);
-            else
-                motorBackward(1,curData[4]);
+void command(){ //motor controls
+//0: mode 		1: pump#		2: dir 		3: rate
+	//run until master sends STOP
+	//reset - get rid of air bubbles
+	//calibrate mode - test flow speed 
+	//clear - get rid of all liquid	
+    switch(curData[0]){
+        case 0: //run motor
+            if(curData[1]==0)	//pump0
+                runMotor(0,curData[2], curData[3]);
+            else 			 	//pump1
+            	runMotor(1,curData[2], curData[3]);
         break;
-        case 1:
-            motorBrake(0);
+        case 1://SSR x2 for sugar water and tea
+            
         break;
-        case 2:
-            motorBrake(1);
+        default: //ping
         break;
     }
 }
-void motorForward(int motor,byte speed)
+void runMotor(int motor, byte dir, byte speed)
 {
-    analogWrite(inPins[motor*2],0);
-    analogWrite(inPins[motor*2+1],speed);
-}
-void motorBackward(int motor,byte speed)
-{
-    analogWrite(inPins[motor*2],speed);
-    analogWrite(inPins[motor*2+1],0);
-}
-void motorBrake(int motor)
-{
-    analogWrite(inPins[motor],255);
-    analogWrite(inPins[motor+1],255);
+    if(dir==0){ //stop
+    	analogWrite(inPins[motor],255);
+    	analogWrite(inPins[motor+1],255);
+    }
+    if(dir==1){ //forward
+	    analogWrite(inPins[motor*2],0);
+	    analogWrite(inPins[motor*2+1],speed);
+	}
+	else if(dir==2){ //backward
+		analogWrite(inPins[motor*2],speed);
+    	analogWrite(inPins[motor*2+1],0);
+	}
 }
