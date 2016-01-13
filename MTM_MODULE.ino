@@ -29,10 +29,10 @@ char motor2Status;
 void setup(){
     noInterrupts();
     //Serial.begin(9600);
-    for(int i=0;i<4;i++){			//configures inPins 
+    for(int i=0;i< sizeof(inPins); i++){			//configures inPins 
         pinMode(inPins[i],OUTPUT);
     }
-    for(int i=0;i<addrSize;i++){	//join I2C bus
+    for(int i=0;i<addrSize;i++){	//join I2C
     	Wire.begin(addr[i]);
     }
     //addr=address();
