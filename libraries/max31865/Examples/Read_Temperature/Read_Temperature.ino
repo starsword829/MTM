@@ -6,16 +6,23 @@
 
 
 MAX31865_RTD rtd( MAX31865_RTD::RTD_PT100, RTD_CS_PIN );
-SPISettings settingsRTD(8000000, MSBFIRST, SPI_MODE3);
+//SPISettings settingsRTD(1000000, MSBFIRST, SPI_MODE3);
 
 void setup()
 {
   Serial.begin( 9600 );
+  Serial.println("HI");
+  /* Initialize SPI communication. */
+  //SPI.begin( );
+  //SPI.setClockDivider( SPI_CLOCK_DIV16 );
+  //SPI.setDataMode( SPI_MODE3 );
   SPI.begin();
+  
   /* Allow the MAX31865 to warm up. */
   delay( 100 );
 
   /* Configure:
+
        V_BIAS enabled
        Auto-conversion
        1-shot disabled
@@ -26,7 +33,7 @@ void setup()
        Low threshold:  0x0000
        High threshold:  0x7fff
   */
-  SPI.beginTransaction(settingsRTD);
+  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE3));
   rtd.configure( true, true, false, true, MAX31865_FAULT_DETECTION_NONE,
                  true, true, 0x0000, 0x7fff );
 }
@@ -35,7 +42,7 @@ void setup()
 
 void loop() 
 {
-  //SPI.beginTransaction(settingsRTD);
+  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE3));
   rtd.read_all( );
 
   if( rtd.status( ) == 0 )
@@ -80,5 +87,5 @@ void loop()
     }
   }
 
-  delay( 100 );
+  delay( 3000 );
 }
