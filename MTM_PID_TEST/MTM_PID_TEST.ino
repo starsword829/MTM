@@ -9,7 +9,7 @@ MAX31865_RTD rtd( MAX31865_RTD::RTD_PT100, RTD_CS_PIN );
 SPISettings settingsRTD(8000000, MSBFIRST, SPI_MODE3);
 
 byte ATuneModeRemember=2;
-double input=80, output=50, setpoint=98;
+double input=80, output=50, setpoint=50;
 double kp=15.95,ki=0.08,kd=0.00;
 
 double kpmodel=1.5, taup=100, theta[50];
