@@ -11,7 +11,7 @@ void serialSend();
 MAX31865_RTD rtd( MAX31865_RTD::RTD_PT100, RTD_CS_PIN );
 SPISettings settingsRTD(8000000, MSBFIRST, SPI_MODE3);
 
-double kp=15.95, ki=0.08, kd=0.00;
+double kp=15.98, ki=0.08, kd=0.00;
 double input=0, output=0, setpoint=0;
 unsigned long serialTime;
 
