@@ -1,6 +1,6 @@
 #include <Wire.h>
 #define FSR_PIN     0      
-#define NUM_MODULES 2
+#define NUM_MODULES 1
 #define DATA_SIZE   4
 
 #define P_TIMEOUT  1000
@@ -10,11 +10,12 @@
 #define MILK_MASS   3
 #define TEA_MASS    2
 
-byte modules[NUM_MODULES] = {0,1};
+byte modules[NUM_MODULES] = {0};
 unsigned long previousMillis = 0;
 //setup functions
 int initialize();
 int send(byte addr, byte data[], int n);
+int sendTest(byte addr, int data);
 int error();
 void startTimer();
 int maxTimer(unsigned long t);
@@ -29,16 +30,21 @@ int massChange(int initMass);
 //sensor variables
 int threshold = 0;                         //initial FSR value
 float mass[] = {BLEED_MASS, MILK_MASS, TEA_MASS};       //mass change setting for pump modes
+byte test[] = {0,1,2,3,4,5};
 
 void setup() {
+    Serial.begin(9600);
+    send(0, test, 6);
     delay(100);
     if(!initialize())
         Serial.println("Initialization Failed");
     threshold = massFSR();
+
 }
 
 void loop() {
-
+    sendTest(0, massFSR());
+    delay(100);
 }
 
 int initialize() {
@@ -64,7 +70,17 @@ int send(byte addr, byte data[], int n) {
     return 0; //returns 0 if sent successfully
 }
 
+int sendTest(byte addr, int data){
+        Wire.begin();
+    Wire.beginTransmission(addr);
+    Wire.write(data);
+    if(Wire.endTransmission())
+        return error();
+    return 0; //returns 0 if sent successfully
+}
+
 int error() {
+    Serial.println("ERROR");
     return -1;
 }
 
@@ -115,16 +131,16 @@ int dispenseTea(byte addr){
 //get instantaneous FSR mass
 int massFSR() {
     int sensorValue = 0;
-    float output = 0.0;
+    int output = 0.0;
     sensorValue = analogRead(FSR_PIN);
     sensorValue = (float)sensorValue;
     threshold = (float)threshold;
     //scale from [0,1023] to [0,10]
-    if(sensorValue>threshold)
-        output = (sensorValue-threshold)/102.3;
-    else
-        output = 0;
-    if(output<0 || output>10)
+    // if(sensorValue>threshold)
+    //     output = (sensorValue-threshold)/102.3;
+    // else
+    //     output = 0;
+    if(output<0 || output>1023)
         return error();
     return output;
 }

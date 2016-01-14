@@ -24,18 +24,15 @@ boolean readyData;
 
 
 void setup(){
-    noInterrupts();
-    //Serial.begin(9600);
-    for(int i=0;i< sizeof(inPins); i++){			//configures inPins 
+    Serial.begin(9600);
+    Serial.println("SLAVE");
+    for(int i=0;i< sizeof(inPins); i++){	//configures inPins 
         pinMode(inPins[i],OUTPUT);
     }
-    for(int i=0;i<addrSize;i++){	//join I2C
-    	Wire.begin(addr[i]);
-    }
-    //addr=address();
+	Wire.begin(addr[0]);                    //join I2C
     readyData=false;
-    Wire.onRequest(requestHandler); //calls requestH upon data request from master
-    Wire.onReceive(receiveHandler); //calls receiveH upon receiving data
+    Wire.onRequest(requestHandler);         //calls requestH upon data request from master
+    Wire.onReceive(receiveHandler);         //calls receiveH upon receiving data
 }
 void requestHandler(){
     Wire.write(outData,commandSize);
@@ -55,13 +52,14 @@ void loop(){
     if(readyData){
         for(int i=0;i<commandSize;i++){
             curData[i] = inData[i]; 
-            outData[i] = inData[i]; 
+            Serial.println(inData[i]);
         }
         readyData = false;
     }
     command();
 }
-void command(){ //motor controls
+//pump controls
+void command(){
 //0: mode 		1: pump#		2: dir 		3: rate
     switch(curData[0]){
         case 0: //run motor
@@ -73,7 +71,7 @@ void command(){ //motor controls
         case 1://SSR x2 for sugar water and tea
             
         break;
-        default: //ping
+        default:
         break;
     }
 }
