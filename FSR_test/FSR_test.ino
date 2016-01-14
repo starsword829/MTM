@@ -26,9 +26,9 @@ const int analogInPin = A0;  // Analog input pin that the potentiometer is attac
 
 int sensorValue = 0;        // value read from the pot
 float outputValue = 0.0;        // value output to the PWM (analog out)
-int count = 0;
-int sum = 0;
-int threshold = 0;
+  int count = 0;
+  int sum = 0;
+  int threshold = 0;
 
 void setup() {
   // initialize serial communications at 9600 bps:
@@ -39,11 +39,11 @@ void setup() {
 void loop() {
   // read the analog in value:
   // map it to the range of the analog out:
-  sensorValue = analogRead(analogInPin);
-  sensorValue = (float)sensorValue;
-  threshold = (float)threshold;
-  
-  outputValue = (sensorValue-threshold)/150.0;
+    sensorValue = analogRead(analogInPin);
+    sensorValue = (float)sensorValue;
+    threshold = (float)threshold;
+    
+    outputValue = (sensorValue-threshold)/150.0;
   // change the analog out value:
   //analogWrite(analogOutPin, outputValue);
 
