@@ -16,15 +16,12 @@
 #define ADDR3		2
 //byte dipPins[]={4,7,8,12};
 byte inPins[]={IN1PIN,IN2PIN,IN3PIN,IN4PIN};
-byte addr[]={ADDR1, ADDR2, ADDR3}
-byte inData[commandSize]={};
-byte outData[returnSize]={};
-byte curData[commandSize]={};
+byte addr[]={ADDR1, ADDR2, ADDR3};
+byte inData[commandSize]={0,0,0,0,0,0};
+byte outData[returnSize]={0,0,0,0,0,0};
+byte curData[commandSize]={0,0,0,0,0,0};
 boolean readyData;
-byte motor1Speed=0;
-byte motor2Speed=0;
-char motor1Status;
-char motor2Status;
+
 
 void setup(){
     noInterrupts();
@@ -66,10 +63,6 @@ void loop(){
 }
 void command(){ //motor controls
 //0: mode 		1: pump#		2: dir 		3: rate
-	//run until master sends STOP
-	//reset - get rid of air bubbles
-	//calibrate mode - test flow speed 
-	//clear - get rid of all liquid	
     switch(curData[0]){
         case 0: //run motor
             if(curData[1]==0)	//pump0
