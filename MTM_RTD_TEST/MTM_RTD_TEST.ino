@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <MAX31865.h>
-
+#include <PID_v1.h>
 
 #define RTD_CS_PIN   10
 
