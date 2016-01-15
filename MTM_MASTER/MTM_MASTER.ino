@@ -33,9 +33,9 @@ int dispenseTea2(byte addr);
 //measurements
 int massFSR();
 int massChange(int initMass);
-void setMass(int milk, int sugar);
+void setTime(int milk, int sugar);
 int threshold = 0;                      //initial FSR value
-float time[] = {BLEED_MASS, MILK_TIME, SUGAR_TIME, TEA_TIME};       //mass change setting for pump modes
+float dispenseTime[] = {BLEED_MASS, MILK_TIME, SUGAR_TIME, TEA_TIME};       //mass change setting for pump modes
 byte test[] = {0,1,2,3,4,5};
 
 void setup() {
@@ -127,28 +127,28 @@ int runPump(byte addr, byte pump, float mass) {
 ////PUMP MODES////
 int bleed(byte addr) {
     //clear air from both pumps
-    if(!runPump(addr, 0, time[0]))
+    if(!runPump(addr, 0, dispenseTime[0]))
         return error();
-    if(!runPump(addr, 1, time[0]))
+    if(!runPump(addr, 1, dispenseTime[0]))
         return error();
 } 
 int dispenseMilk(byte addr){
-    if(!runPump(addr, 0, time[1]))          //pump0 is for milk
+    if(!runPump(addr, 0, dispenseTime[1]))          //pump0 is for milk
         return error();
     return ready = 1;
 }
 int dispenseSugar(byte addr){
-     if(!runPump(addr, 0, time[2]))          //pump1 is for sugar
+     if(!runPump(addr, 0, dispenseTime[2]))          //pump1 is for sugar
         return error();
      return ready = 2;
 }
 int dispenseTea1(byte addr){
-    if(!runPump(addr, 1, time[3]))          //pump2 is for tea1
+    if(!runPump(addr, 1, dispenseTime[3]))          //pump2 is for tea1
         return error();
     return ready = 3;
 }
 int dispenseTea2(byte addr){
-    if(!runPump(addr, 1, time[3]))          //pump3 is for tea2
+    if(!runPump(addr, 1, dispenseTime[3]))          //pump3 is for tea2
         return error();
     return ready = 3;
 }
@@ -172,8 +172,8 @@ int massChange(int initMass){
     return massFSR()-initMass;
 }
 //allows UI to set milk, sugar amount
-void setMass(int milk, int sugar){
-    time[1] = (milk/100)*MILK_TIME; //% of default milk
-    time[2] = (sugar/100)*SUGAR_TIME; //% of default sugar
-    time[3] = (TOTAL_TIME-time[1]-time[2]); //fills cup w tea
+void setTime(int milk, int sugar){
+    dispenseTime[1] = (milk/100)*MILK_TIME; //% of default milk
+    dispenseTime[2] = (sugar/100)*SUGAR_TIME; //% of default sugar
+    dispenseTime[3] = (TOTAL_TIME-dispenseTime[1]-dispenseTime[2]); //fills cup w tea
 }
