@@ -6,9 +6,12 @@
 #define P_TIMEOUT  1000
 #define P_START     0
 #define P_STOP      1
-#define BLEED_MASS  0.1
-#define MILK_MASS   3
-#define TEA_MASS    2
+//default masses
+#define BLEED_MASS  5
+#define TOTAL_TIME  100
+#define MILK_TIME   30
+#define SUGAR_TIME  10
+#define TEA_TIME    50
 
 byte modules[NUM_MODULES] = {0};
 unsigned long previousMillis = 0;
@@ -19,17 +22,20 @@ int sendTest(byte addr, int data);
 int error();
 void startTimer();
 int maxTimer(unsigned long t);
+int ready = 0;
 //pump functions
 int runPump(byte addr, byte pump, float mass);
 int bleed(byte addr);
 int dispenseMilk(byte addr);
-int dispenseTea(byte addr);
+int dispenseSugar(byte addr);
+int dispenseTea1(byte addr);
+int dispenseTea2(byte addr);
+//measurements
 int massFSR();
 int massChange(int initMass);
-
-//sensor variables
-int threshold = 0;                         //initial FSR value
-float mass[] = {BLEED_MASS, MILK_MASS, TEA_MASS};       //mass change setting for pump modes
+void setMass(int milk, int sugar);
+int threshold = 0;                      //initial FSR value
+float time[] = {BLEED_MASS, MILK_TIME, SUGAR_TIME, TEA_TIME};       //mass change setting for pump modes
 byte test[] = {0,1,2,3,4,5};
 
 void setup() {
@@ -40,13 +46,12 @@ void setup() {
         Serial.println("Initialization Failed");
     }
     threshold = massFSR();
-
 }
 
 void loop() {
-    sendTest(0, massFSR());
-    Serial.println(massFSR());
-    delay(100);
+    // sendTest(0, massFSR());
+    // Serial.println(massFSR());
+    // delay(100);
 }
 
 int initialize() {
@@ -119,41 +124,56 @@ int runPump(byte addr, byte pump, float mass) {
     }
     return 0;
 }
-
-//clear air from both pumps
+////PUMP MODES////
 int bleed(byte addr) {
-    if(!runPump(addr, 0, mass[0]))
+    //clear air from both pumps
+    if(!runPump(addr, 0, time[0]))
         return error();
-    if(!runPump(addr, 1, mass[0]))
+    if(!runPump(addr, 1, time[0]))
         return error();
 } 
-//
 int dispenseMilk(byte addr){
-    if(!runPump(addr, 0, mass[1]))          //pump0 is for milk
+    if(!runPump(addr, 0, time[1]))          //pump0 is for milk
         return error();
+    return ready = 1;
 }
-int dispenseTea(byte addr){
-    if(!runPump(addr, 1, mass[2]))          //pump1 is for tea
+int dispenseSugar(byte addr){
+     if(!runPump(addr, 0, time[2]))          //pump1 is for sugar
         return error();
+     return ready = 2;
+}
+int dispenseTea1(byte addr){
+    if(!runPump(addr, 1, time[3]))          //pump2 is for tea1
+        return error();
+    return ready = 3;
+}
+int dispenseTea2(byte addr){
+    if(!runPump(addr, 1, time[3]))          //pump3 is for tea2
+        return error();
+    return ready = 3;
 }
 
+
 //get instantaneous FSR mass
-int massFSR() {
-    int sensorValue = 1;
+int massFSR(){
+    int sensorValue = 0;
     int output = 2;
     sensorValue = analogRead(FSR_PIN);
-    sensorValue = (float)sensorValue;
-    threshold = (float)threshold;
-    //scale from [0,1023] to [0,10]
+    //scale from [0,1023] to [0,100]
     if(sensorValue>=threshold)
-         output = (sensorValue-threshold);///102.3;
-     else
-         output = 0;
+        output = (sensorValue-threshold)/10.23;
+    else
+        output = 0;
     if(output<0 || output>1023)
         return error();
     return output;
 }
-
-int massChange(int initMass) {
+int massChange(int initMass){
     return massFSR()-initMass;
+}
+//allows UI to set milk, sugar amount
+void setMass(int milk, int sugar){
+    time[1] = (milk/100)*MILK_TIME; //% of default milk
+    time[2] = (sugar/100)*SUGAR_TIME; //% of default sugar
+    time[3] = (TOTAL_TIME-time[1]-time[2]); //fills cup w tea
 }
