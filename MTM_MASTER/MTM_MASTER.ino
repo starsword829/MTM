@@ -44,9 +44,9 @@ void setup() {
 }
 
 void loop() {
-    //sendTest(0, massFSR());
+    sendTest(0, massFSR());
     Serial.println(massFSR());
-    // delay(100);
+    delay(100);
 }
 
 int initialize() {
@@ -77,12 +77,13 @@ int send(byte addr, byte data[], int n) {
 }
 
 int sendTest(byte addr, int data){
-        Wire.begin();
+    Wire.begin();
     Wire.beginTransmission(addr);
     Wire.write(data);
     if(Wire.endTransmission() != 0) {
         return error();
     }
+    Serial.println("Sent from sendTest");
     return 0; //returns 0 if sent successfully
 }
 
