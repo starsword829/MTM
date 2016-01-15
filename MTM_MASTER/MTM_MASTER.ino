@@ -36,8 +36,9 @@ void setup() {
     Serial.begin(9600);
     //send(0, test, 6);
     delay(100);
-    if(!initialize())
+    if(!initialize()) {
         Serial.println("Initialization Failed");
+    }
     threshold = massFSR();
 
 }
@@ -51,23 +52,26 @@ void loop() {
 int initialize() {
     //Check connected
     for(int i=0; i<NUM_MODULES; i++) {
-        if(!send(modules[i], 0, 1))
+        if(!send(modules[i], 0, 1)) {
             return error();
+        }
     }
     for(int i=0; i<NUM_MODULES; i++) {
-        if(!bleed(modules[i]))
+        if(!bleed(modules[i])) {
             return error();
+        }
     }
     return 0;
 }
 
 int send(byte addr, byte data[], int n) {
     //if(!Wire.isEnabled())
-        Wire.begin();
+    Wire.begin();
     Wire.beginTransmission(addr);
     Wire.write(data, n);
-    if(Wire.endTransmission())
+    if(Wire.endTransmission() != 0) {
         return error();
+    }
     Serial.print("Sent");
     return 0; //returns 0 if sent successfully
 }
@@ -76,8 +80,9 @@ int sendTest(byte addr, int data){
         Wire.begin();
     Wire.beginTransmission(addr);
     Wire.write(data);
-    if(Wire.endTransmission())
+    if(Wire.endTransmission() != 0) {
         return error();
+    }
     return 0; //returns 0 if sent successfully
 }
 
@@ -108,8 +113,9 @@ int runPump(byte addr, byte pump, float mass) {
     startTimer();
     int initMass = massFSR();
     while(massChange(initMass)< mass && !maxTimer(P_TIMEOUT));
-    if(!send(addr, temp, 2))
+    if(!send(addr, temp, 2)) {
         error();
+    }
     return 0;
 }
 
