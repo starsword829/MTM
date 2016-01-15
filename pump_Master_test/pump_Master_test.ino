@@ -1,5 +1,5 @@
 #include <Wire.h>
-//#define FSR_PIN     0      
+#define FSR_PIN     0      
 #define NUM_MODULES 2
 #define DATA_SIZE   4
 #define ADDR1       0xAA
@@ -9,7 +9,7 @@
 #define P_TIMEOUT  1000
 #define P_START     0
 #define P_STOP      1
-//default masses
+//default masses/times
 // #define BLEED_MASS  5
 // #define TOTAL_TIME  100
 // #define MILK_TIME   30
@@ -25,7 +25,7 @@ int send(byte addr, byte data[], int n);
 int error();
 // void startTimer();
 // int maxTimer(unsigned long t);
-//int ready = 0;
+// int ready = 0;
 //pump functions
 // int runPump(byte addr, byte pump, float mass);
 // int bleed(byte addr);
@@ -34,10 +34,10 @@ int error();
 // int dispenseTea1(byte addr);
 // int dispenseTea2(byte addr);
 //measurements
-// int massFSR();
+int massFSR();
 // int massChange(int initMass);
 // void setTime(int milk, int sugar);
-// int threshold = 0;                      //initial FSR value
+int threshold = 0;                      //initial FSR value
 //float dispenseTime[] = {BLEED_MASS, MILK_TIME, SUGAR_TIME, TEA_TIME};       //mass change setting for pump modes
 byte connect[] = {0,0,0,0};
 byte test[] = {0,1,1,255};
@@ -48,30 +48,31 @@ void setup() {
     if(!initialize()) {
         Serial.println("Initialization Failed");
     }
-    // send(ADDR1, test, 4);
-    // delay(1000);
-    // send(ADDR1, test2, 4);
-    // delay(1000);
+    send(ADDR1, test, 4);
+    delay(1000);
+    send(ADDR1, test2, 4);
+    delay(1000);
     send(ADDR2, test, 4);
     delay(1000);
     send(ADDR2, test2, 4);
     delay(1000);
     test[1] = 0;
     test2[1] = 0;
-    // send(ADDR1, test, 4);
-    // delay(1000);
-    // send(ADDR1, test2, 4);
-    // delay(1000);
+    send(ADDR1, test, 4);
+    delay(1000);
+    send(ADDR1, test2, 4);
+    delay(1000);
     send(ADDR2, test, 4);
     delay(1000);
     send(ADDR2, test2, 4);
     delay(1000);
-    //threshold = massFSR();
+    threshold = massFSR();
 }
 
 void loop() {
+
     // sendTest(0, massFSR());
-    // Serial.println(massFSR());
+    Serial.println(massFSR());
     // delay(100);
 }
 
@@ -179,20 +180,20 @@ int error() {
 // }
 
 
-// //get instantaneous FSR mass
-// int massFSR(){
-//     int sensorValue = 0;
-//     int output = 2;
-//     sensorValue = analogRead(FSR_PIN);
-//     //scale from [0,1023] to [0,100]
-//     if(sensorValue>=threshold)
-//         output = (sensorValue-threshold)/10.23;
-//     else
-//         output = 0;
-//     if(output<0 || output>1023)
-//         return error();
-//     return output;
-// }
+//get instantaneous FSR mass
+int massFSR(){
+    int sensorValue = 0;
+    int output = 2;
+    sensorValue = analogRead(FSR_PIN);
+    //scale from [0,1023] to [0,100]
+    if(sensorValue>=threshold)
+        output = (sensorValue-threshold)/10.23;
+    else
+        output = 0;
+    if(output<0 || output>1023)
+        return error();
+    return output;
+}
 // int massChange(int initMass){
 //     return massFSR()-initMass;
 // }
