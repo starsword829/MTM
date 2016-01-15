@@ -34,7 +34,7 @@ byte test[] = {0,1,2,3,4,5};
 
 void setup() {
     Serial.begin(9600);
-    //send(0, test, 6);
+    send(0, test, 6);
     delay(100);
     if(!initialize()) {
         Serial.println("Initialization Failed");
@@ -44,9 +44,9 @@ void setup() {
 }
 
 void loop() {
-    //sendTest(0, massFSR());
-    //Serial.println(massFSR());
-    // delay(100);
+    sendTest(0, massFSR());
+    Serial.println(massFSR());
+    delay(100);
 }
 
 int initialize() {
@@ -77,12 +77,13 @@ int send(byte addr, byte data[], int n) {
 }
 
 int sendTest(byte addr, int data){
-        Wire.begin();
+    Wire.begin();
     Wire.beginTransmission(addr);
     Wire.write(data);
     if(Wire.endTransmission() != 0) {
         return error();
     }
+    Serial.println("Sent from sendTest");
     return 0; //returns 0 if sent successfully
 }
 
@@ -138,16 +139,16 @@ int dispenseTea(byte addr){
 
 //get instantaneous FSR mass
 int massFSR() {
-    int sensorValue = 0;
-    int output = 0.0;
+    int sensorValue = 1;
+    int output = 2;
     sensorValue = analogRead(FSR_PIN);
     sensorValue = (float)sensorValue;
     threshold = (float)threshold;
     //scale from [0,1023] to [0,10]
-    // if(sensorValue>threshold)
-    //     output = (sensorValue-threshold)/102.3;
-    // else
-    //     output = 0;
+    if(sensorValue>=threshold)
+         output = (sensorValue-threshold);///102.3;
+     else
+         output = 0;
     if(output<0 || output>1023)
         return error();
     return output;
