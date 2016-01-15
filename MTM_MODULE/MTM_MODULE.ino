@@ -43,7 +43,7 @@ void receiveHandler(int numBytes){
         inData[i]=Wire.read();
         i++;
     }
-
+    Serial.println("Received");
     readyData=true;	
 }
 

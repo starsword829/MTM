@@ -34,7 +34,7 @@ byte test[] = {0,1,2,3,4,5};
 
 void setup() {
     Serial.begin(9600);
-    send(0, test, 6);
+    //send(0, test, 6);
     delay(100);
     if(!initialize())
         Serial.println("Initialization Failed");
@@ -43,8 +43,9 @@ void setup() {
 }
 
 void loop() {
-    sendTest(0, massFSR());
-    delay(100);
+    //sendTest(0, massFSR());
+    //Serial.println(massFSR());
+    // delay(100);
 }
 
 int initialize() {
@@ -67,6 +68,7 @@ int send(byte addr, byte data[], int n) {
     Wire.write(data, n);
     if(Wire.endTransmission())
         return error();
+    Serial.print("Sent");
     return 0; //returns 0 if sent successfully
 }
 
