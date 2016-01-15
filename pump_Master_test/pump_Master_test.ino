@@ -1,6 +1,6 @@
 #include <Wire.h>
 //#define FSR_PIN     0      
-#define NUM_MODULES 3
+#define NUM_MODULES 2
 #define DATA_SIZE   4
 #define ADDR1       0xAA
 #define ADDR2       0xBB
@@ -16,12 +16,12 @@
 // #define SUGAR_TIME  10
 // #define TEA_TIME    50
 
-byte modules[NUM_MODULES] = {ADDR1,ADDR2,ADDR3};
-unsigned long previousMillis = 0;
+byte modules[NUM_MODULES] = {ADDR1,ADDR2};
+//unsigned long previousMillis = 0;
 //setup functions
 int initialize();
 int send(byte addr, byte data[], int n);
-int sendTest(byte addr, int data);
+//int sendTest(byte addr, int data);
 int error();
 // void startTimer();
 // int maxTimer(unsigned long t);
@@ -78,7 +78,7 @@ void loop() {
 int initialize() {
     //Check connected
     for(int i=0; i<NUM_MODULES; i++) {
-        if(!send(modules[i], connect, 1)) {
+        if(!send(modules[i], connect, DATA_SIZE)) {
             return error();
         }
         Serial.println("connected");
