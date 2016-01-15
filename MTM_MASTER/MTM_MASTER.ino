@@ -39,11 +39,15 @@ int massChange(int initMass);
 void setTime(int milk, int sugar);
 int threshold = 0;                      //initial FSR value
 float dispenseTime[] = {BLEED_MASS, MILK_TIME, SUGAR_TIME, TEA_TIME};       //mass change setting for pump modes
-byte test[] = {0,1,2,3,4,5};
+byte pump1[] = {0,1,1,255};
+byte pump2[] = {0,0,1,255};
+byte pump3[] = {0,0,1,255};
+byte pump4[] = {0,0,1,255};
+
 
 void setup() {
     Serial.begin(9600);
-    send(0, test, 6);
+    //send(0, test, 6);
     delay(100);
     if(!initialize()) {
         Serial.println("Initialization Failed");
@@ -120,8 +124,9 @@ int runPump(byte addr, byte pump, float mass) {
         error();                        //error if unsuccessful transmission
     temp[0] = P_STOP;                   //stop pump command
     startTimer();
-    int initMass = massFSR();
-    while(massChange(initMass)< mass && !maxTimer(P_TIMEOUT));
+    //int initMass = massFSR();
+    //while(massChange(initMass)< mass && !maxTimer(P_TIMEOUT));
+    delay(1000);
     if(!send(addr, temp, 2)) {
         error();
     }

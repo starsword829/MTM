@@ -42,37 +42,47 @@ int threshold = 0;                      //initial FSR value
 byte connect[] = {0,0,0,0};
 byte test[] = {0,1,1,255};
 byte test2[] = {0,1,0,255};
+byte pump1[] = {0,1,1,255};
+byte spump1[] = {0,1,1,0};
+byte pump2[] = {0,0,1,255};
+byte spump2[] = {0,0,1,0};
+byte pump3[] = {0,1,1,255};
+byte spump3[] = {0,1,1,0};
+byte pump4[] = {0,0,1,255};
+byte spump4[] = {0,0,0,0};
 
 void setup() {
+    pinMode(7,INPUT_PULLUP);
     Serial.begin(9600);
     if(!initialize()) {
         Serial.println("Initialization Failed");
     }
-    send(ADDR1, test, 4);
-    delay(1000);
-    send(ADDR1, test2, 4);
-    delay(1000);
-    send(ADDR2, test, 4);
-    delay(1000);
-    send(ADDR2, test2, 4);
-    delay(1000);
-    test[1] = 0;
-    test2[1] = 0;
-    send(ADDR1, test, 4);
-    delay(1000);
-    send(ADDR1, test2, 4);
-    delay(1000);
-    send(ADDR2, test, 4);
-    delay(1000);
-    send(ADDR2, test2, 4);
-    delay(1000);
-    threshold = massFSR();
+    //threshold = massFSR();
+    send(ADDR1,spump1,4);
+    send(ADDR1,spump2,4);
+    send(ADDR2,spump3,4);
+    send(ADDR2,spump4,4);
+    delay(2000);
 }
 
 void loop() {
-
+    while(digitalRead(7)==HIGH);
+    send(ADDR1,pump1,4);
+    delay(3000);
+    send(ADDR1,spump1,4);
+    send(ADDR1,pump2,4);
+    delay(3000);
+    send(ADDR1,spump2,4);
+    send(ADDR2,pump3,4);
+    delay(3000);
+    send(ADDR2,spump3,4);
+    send(ADDR2,pump4,4);
+    delay(3000);
+    send(ADDR2,spump4,4);
+    while(digitalRead(7)==LOW);
+    delay(100);
     // sendTest(0, massFSR());
-    Serial.println(massFSR());
+    //Serial.println(massFSR());
     // delay(100);
 }
 
