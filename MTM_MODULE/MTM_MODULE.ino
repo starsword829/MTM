@@ -1,8 +1,8 @@
 //MTM_MODULE.ino
 
 #include <Wire.h>
-#define commandSize 6
-#define returnSize  6
+#define commandSize 4
+#define returnSize  4
 #define IN1PIN      3
 #define IN2PIN      5
 #define IN3PIN      6
@@ -11,21 +11,21 @@
 #define M1BRAKE     1
 #define M2BRAKE     2
 #define addrSize    3
-#define ADDR1		0
-#define ADDR2		1
-#define ADDR3		2
+#define ADDR1		0xAA
+#define ADDR2		0xBB
+#define ADDR3		0xCC
 //byte dipPins[]={4,7,8,12};
 byte inPins[]={IN1PIN,IN2PIN,IN3PIN,IN4PIN};
 byte addr[]={ADDR1, ADDR2, ADDR3};
-byte inData[commandSize]={0,0,0,0,0,0};
-byte outData[returnSize]={0,0,0,0,0,0};
-byte curData[commandSize]={0,0,0,0,0,0};
+byte inData[commandSize]={0,0,0,0};
+byte outData[returnSize]={0,0,0,0};
+byte curData[commandSize]={0,0,0,0};
 boolean readyData;
 
 
 void setup(){
     Serial.begin(9600);
-    Serial.println("SLAVE");
+    Serial.println("SLAVE ON");
     for(int i=0;i< sizeof(inPins); i++){	//configures inPins 
         pinMode(inPins[i],OUTPUT);
     }

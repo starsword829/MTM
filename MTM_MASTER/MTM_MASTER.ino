@@ -1,7 +1,10 @@
 #include <Wire.h>
 #define FSR_PIN     0      
-#define NUM_MODULES 1
+#define NUM_MODULES 3
 #define DATA_SIZE   4
+#define ADDR1       0xAA
+#define ADDR2       0xBB
+#define ADDR3       0xCC
 
 #define P_TIMEOUT  1000
 #define P_START     0
@@ -13,7 +16,7 @@
 #define SUGAR_TIME  10
 #define TEA_TIME    50
 
-byte modules[NUM_MODULES] = {0};
+byte modules[NUM_MODULES] = {ADDR1,ADDR2,ADDR3};
 unsigned long previousMillis = 0;
 //setup functions
 int initialize();
