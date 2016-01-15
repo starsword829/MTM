@@ -29,7 +29,7 @@ void setup(){
     for(int i=0;i< sizeof(inPins); i++){	//configures inPins 
         pinMode(inPins[i],OUTPUT);
     }
-	Wire.begin(addr[0]);                    //join I2C
+	Wire.begin(addr[1]);                    //join I2C
     readyData=false;
     Wire.onRequest(requestHandler);         //calls requestH upon data request from master
     Wire.onReceive(receiveHandler);         //calls receiveH upon receiving data

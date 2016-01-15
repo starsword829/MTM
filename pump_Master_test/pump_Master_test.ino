@@ -48,20 +48,20 @@ void setup() {
     if(!initialize()) {
         Serial.println("Initialization Failed");
     }
-    send(ADDR1, test, 4);
-    delay(1000);
-    send(ADDR1, test2, 4);
-    delay(1000);
+    // send(ADDR1, test, 4);
+    // delay(1000);
+    // send(ADDR1, test2, 4);
+    // delay(1000);
     send(ADDR2, test, 4);
     delay(1000);
     send(ADDR2, test2, 4);
     delay(1000);
     test[1] = 0;
     test2[1] = 0;
-    send(ADDR1, test, 4);
-    delay(1000);
-    send(ADDR1, test2, 4);
-    delay(1000);
+    // send(ADDR1, test, 4);
+    // delay(1000);
+    // send(ADDR1, test2, 4);
+    // delay(1000);
     send(ADDR2, test, 4);
     delay(1000);
     send(ADDR2, test2, 4);
